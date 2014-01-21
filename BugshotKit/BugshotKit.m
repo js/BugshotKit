@@ -110,12 +110,19 @@ UIImage *imageWithDrawing(CGSize size, void (^drawingCommands)())
 - (instancetype)init
 {
     if ( (self = [super init]) ) {
+
         if ([self.class isProbablyAppStoreBuild]) {
             self.isDisabled = YES;
             NSLog(@"[BugshotKit] App Store build detected. BugshotKit is disabled.");
             return self;
         }
-        
+
+        if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
+            self.isDisabled = YES;
+            NSLog(@"[BugshotKit] Running on iOS < 7. BugshotKit is disabled.");
+            return self;
+        }
+
         self.lastConsoleUpdate = 0;
         self.annotationFillColor = [UIColor colorWithRed:1.0f green:0.2196f blue:0.03922f alpha:1.0f]; // Bugshot red-orange
         self.annotationStrokeColor = [UIColor whiteColor];
